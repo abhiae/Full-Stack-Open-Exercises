@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
+import Notification from "./components/Notification";
 import phoneBookService from "./services/phoneBook";
 
 const App = () => {
@@ -10,7 +11,10 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filteredPersons, setFilteredPersons] = useState(persons);
   const [filterName, setFilterName] = useState("");
+  const [notificationMessage, setNotificationMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
+  // console.log("logging msg from app", notificationMessage);
   // to initially load
   useEffect(() => {
     phoneBookService.getAll().then((initialPersons) => {
@@ -44,15 +48,20 @@ const App = () => {
           (person) => person.name === newName
         );
         const updatedPerson = { ...existingperson, number: newNumber };
-        phoneBookService.update(updatedPerson).then((returnedContact) => {
-          const updatedPersonsList = persons.map((person) =>
-            person.id === updatedPerson.id ? returnedContact : person
-          );
-          setPersons(updatedPersonsList);
-          setFilteredPersons(updatedPersonsList);
-          setNewName("");
-          setNewNumber("");
-        });
+        phoneBookService
+          .update(updatedPerson)
+          .then((returnedContact) => {
+            const updatedPersonsList = persons.map((person) =>
+              person.id === updatedPerson.id ? returnedContact : person
+            );
+            setPersons(updatedPersonsList);
+            setFilteredPersons(updatedPersonsList);
+            setNewName("");
+            setNewNumber("");
+          })
+          .catch((error) => {
+            console.log("contact already removed");
+          });
       }
     } else {
       const contactObject = {
@@ -66,6 +75,10 @@ const App = () => {
         setFilteredPersons(updatedPersonsList);
         setNewName("");
         setNewNumber("");
+        setNotificationMessage(`Added ${newName}`);
+        setTimeout(() => {
+          setNotificationMessage(null);
+        }, 2000);
       });
     }
   };
@@ -80,7 +93,12 @@ const App = () => {
           setPersons(persons.filter((person) => person.id !== targetId));
         })
         .catch((error) => {
-          console.error("there was an error deleting the contact:", error);
+          setErrorMessage(
+            `Information of ${targetName} has already been removed from the server`
+          );
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 2000);
         });
     }
   };
@@ -97,6 +115,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification
+        errorMessage={errorMessage}
+        notificationMessage={notificationMessage}
+      />
       <Filter filterName={filterName} handleFilter={handleFilter} />
       <h2>add a new</h2>
       <PersonForm
