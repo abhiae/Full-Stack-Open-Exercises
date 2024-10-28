@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useState } from "react";
 const baseUrl = "https://studies.cs.helsinki.fi/restcountries/api";
 
 const getAll = () => {

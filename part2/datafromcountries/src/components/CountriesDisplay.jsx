@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import countriesService from "../services/countries";
+import weatherService from "../services/weather";
 import SingleCountryDisplay from "./SingleCountryDisplay";
 const CountriesDisplay = ({ filteredCountries, searchText }) => {
   const [countryData, setCountryData] = useState(null);
+  const [weatherData, setWeatherData] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
 
   //fetch data when a country is chosen
@@ -12,9 +14,20 @@ const CountriesDisplay = ({ filteredCountries, searchText }) => {
         .getCountryInfo(selectedCountry)
         .then((countryDataPromise) => {
           setCountryData(countryDataPromise);
+          // console.log(countryData);
         });
     }
   }, [selectedCountry]);
+
+  useEffect(() => {
+    if (countryData) {
+      const lat = countryData.capitalInfo.latlng[0];
+      const lon = countryData.capitalInfo.latlng[1];
+      weatherService.getWeatherInfo(lat, lon).then((weatherDataPromise) => {
+        setWeatherData(weatherDataPromise);
+      });
+    }
+  }, [countryData]);
   // fetch data when only one country remains
   useEffect(() => {
     if (filteredCountries.length === 1) {
@@ -42,7 +55,12 @@ const CountriesDisplay = ({ filteredCountries, searchText }) => {
       </div>
     ));
   } else if (filteredCountries.length === 1 || selectedCountry) {
-    return <SingleCountryDisplay countryData={countryData} />;
+    return (
+      <SingleCountryDisplay
+        countryData={countryData}
+        weatherData={weatherData}
+      />
+    );
   }
   return null;
 };

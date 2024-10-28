@@ -1,6 +1,4 @@
-import countriesService from "../services/countries";
-const SingleCountryDisplay = ({ countryData, countryName, onShow }) => {
-  // conditional rendering if the data has been loaded
+const SingleCountryDisplay = ({ countryData, weatherData }) => {
   return (
     <div>
       {countryData ? (
@@ -19,6 +17,13 @@ const SingleCountryDisplay = ({ countryData, countryName, onShow }) => {
             src={countryData.flags.png}
             alt={countryData.flags.alt}
           />
+          <h2>Weather in {countryData.capital}</h2>
+          <p>temperature {weatherData.current.temp_c} Celcius</p>
+          <img
+            src={weatherData.current.condition.icon}
+            alt={weatherData.current.condition.clear}
+          />
+          <p>wind {weatherData.current.wind_kph} km/h</p>
         </>
       ) : (
         <p>Loading...</p>

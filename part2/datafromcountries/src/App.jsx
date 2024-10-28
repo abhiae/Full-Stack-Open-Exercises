@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import countriesService from "./services/countries";
 import CountriesDisplay from "./components/CountriesDisplay";
-import { all } from "axios";
 
 function App() {
   const [countries, setCountries] = useState([]);
