@@ -67,12 +67,15 @@ const App = () => {
       const contactObject = {
         name: newName,
         number: newNumber,
-        id: `${persons.length + 1}`,
+        // id: `${persons.length + 1}`,
       };
       phoneBookService.create(contactObject).then((returnedContact) => {
-        const updatedPersonsList = persons.concat(returnedContact);
-        setPersons(updatedPersonsList);
-        setFilteredPersons(updatedPersonsList);
+        // console.log(returnedContact);
+        setPersons(returnedContact);
+        setFilteredPersons(returnedContact);
+        // const updatedPersonsList = persons.concat(returnedContact);
+        // setPersons(updatedPersonsList);
+        // setFilteredPersons(updatedPersonsList);
         setNewName("");
         setNewNumber("");
         setNotificationMessage(`Added ${newName}`);
