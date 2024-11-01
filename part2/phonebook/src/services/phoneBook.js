@@ -1,5 +1,5 @@
-import axios from "axios";
-const baseUrl = "/api/persons";
+import axios from 'axios';
+const baseUrl = '/api/persons';
 
 const getAll = () => {
   const request = axios.get(baseUrl);
@@ -22,7 +22,7 @@ const update = (updatedContactObject) => {
 const remove = (id) => {
   const request = axios.delete(`${baseUrl}/${id}`);
   return request.then((response) => {
-    console.log("contact deleted successfully");
+    console.log('contact deleted successfully');
   });
 };
 

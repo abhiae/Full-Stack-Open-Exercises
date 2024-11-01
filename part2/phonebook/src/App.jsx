@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
-import Persons from "./components/Persons";
-import PersonForm from "./components/PersonForm";
-import Filter from "./components/Filter";
-import Notification from "./components/Notification";
-import phoneBookService from "./services/phoneBook";
+import { useEffect, useState } from 'react';
+import Persons from './components/Persons';
+import PersonForm from './components/PersonForm';
+import Filter from './components/Filter';
+import Notification from './components/Notification';
+import phoneBookService from './services/phoneBook';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
+  const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
   const [filteredPersons, setFilteredPersons] = useState(persons);
-  const [filterName, setFilterName] = useState("");
+  const [filterName, setFilterName] = useState('');
   const [notificationMessage, setNotificationMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -25,7 +25,7 @@ const App = () => {
 
   // to render correctly for filter after filterName changes
   useEffect(() => {
-    if (filterName.trim() === "") {
+    if (filterName.trim() === '') {
       setFilteredPersons(persons);
     } else {
       const filteredPersonsTemp = persons.filter((person) =>
@@ -56,8 +56,8 @@ const App = () => {
             );
             setPersons(updatedPersonsList);
             setFilteredPersons(updatedPersonsList);
-            setNewName("");
-            setNewNumber("");
+            setNewName('');
+            setNewNumber('');
           })
           .catch((error) => {
             setErrorMessage(error.response.data.error);
@@ -81,8 +81,8 @@ const App = () => {
           const updatedPersonsList = persons.concat(returnedContact);
           setPersons(updatedPersonsList);
           setFilteredPersons(updatedPersonsList);
-          setNewName("");
-          setNewNumber("");
+          setNewName('');
+          setNewNumber('');
           setNotificationMessage(`Added ${newName}`);
           setTimeout(() => {
             setNotificationMessage(null);
