@@ -71,11 +71,11 @@ const App = () => {
       };
       phoneBookService.create(contactObject).then((returnedContact) => {
         // console.log(returnedContact);
-        setPersons(returnedContact);
-        setFilteredPersons(returnedContact);
-        // const updatedPersonsList = persons.concat(returnedContact);
-        // setPersons(updatedPersonsList);
-        // setFilteredPersons(updatedPersonsList);
+        // setPersons(returnedContact);
+        // setFilteredPersons(returnedContact);
+        const updatedPersonsList = persons.concat(returnedContact);
+        setPersons(updatedPersonsList);
+        setFilteredPersons(updatedPersonsList);
         setNewName("");
         setNewNumber("");
         setNotificationMessage(`Added ${newName}`);
