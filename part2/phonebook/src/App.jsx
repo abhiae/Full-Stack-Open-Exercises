@@ -60,7 +60,10 @@ const App = () => {
             setNewNumber("");
           })
           .catch((error) => {
-            console.log("contact already removed");
+            setErrorMessage(error.response.data.error);
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 2000);
           });
       }
     } else {
@@ -69,20 +72,28 @@ const App = () => {
         number: newNumber,
         // id: `${persons.length + 1}`,
       };
-      phoneBookService.create(contactObject).then((returnedContact) => {
-        // console.log(returnedContact);
-        // setPersons(returnedContact);
-        // setFilteredPersons(returnedContact);
-        const updatedPersonsList = persons.concat(returnedContact);
-        setPersons(updatedPersonsList);
-        setFilteredPersons(updatedPersonsList);
-        setNewName("");
-        setNewNumber("");
-        setNotificationMessage(`Added ${newName}`);
-        setTimeout(() => {
-          setNotificationMessage(null);
-        }, 2000);
-      });
+      phoneBookService
+        .create(contactObject)
+        .then((returnedContact) => {
+          // console.log(returnedContact);
+          // setPersons(returnedContact);
+          // setFilteredPersons(returnedContact);
+          const updatedPersonsList = persons.concat(returnedContact);
+          setPersons(updatedPersonsList);
+          setFilteredPersons(updatedPersonsList);
+          setNewName("");
+          setNewNumber("");
+          setNotificationMessage(`Added ${newName}`);
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 2000);
+        })
+        .catch((error) => {
+          setErrorMessage(error.response.data.error);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 2000);
+        });
     }
   };
 
