@@ -63,6 +63,29 @@ test('if title or url are missing backend responds with 400', async () => {
   };
   await api.post('/api/blogs').send(newBlog).expect(400);
 });
+
+test('delete with valid blog', async () => {
+  const blogsAtStart = await helper.blogsInDb();
+  await api.delete(`/api/blogs/${blogsAtStart[0].id}`).expect(204);
+});
+test('delete with valid id but not present', async () => {
+  const nonExistingValidId = await helper.nonExistingId;
+  await api.delete(`/api/blogs/${nonExistingValidId}`).expect(404); // better to use status code 204 if it doesn't exist but id is valid
+});
+test('delete with invalid id', async () => {
+  const invalidId = '213412312423';
+  await api.delete(`/api/blogs/${invalidId}`).expect(400);
+});
+
+test('updating likes works', async () => {
+  const blogsAtStart = await helper.blogsInDb();
+  const updatedBlog = await api
+    .put(`/api/blogs/${blogsAtStart[0].id}`)
+    .send({ likes: 30 });
+  console.log('updatedblog', updatedBlog);
+  assert.strictEqual(updatedBlog.body.likes, 30);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
