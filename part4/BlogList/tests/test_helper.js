@@ -32,7 +32,18 @@ const initialBlogs = [
     likes: 15,
   },
 ];
-
+const initialUsers = [
+  {
+    username: 'test',
+    name: 'Test Name',
+    password: 'test',
+  },
+  {
+    username: 'abhinav',
+    name: 'Abhinav Jaishi',
+    password: '0905',
+  },
+];
 const nonExistingId = async () => {
   const blog = new Blog({
     title: 'Exploring the Power of Functional Programming in JavaScript',
