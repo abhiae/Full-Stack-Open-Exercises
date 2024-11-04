@@ -1,5 +1,5 @@
 const Blog = require('../models/blog');
-
+const jwt = require('jsonwebtoken');
 const initialBlogs = [
   {
     title: 'Introduction to Mongoose for MongoDB',
@@ -32,24 +32,15 @@ const initialBlogs = [
     likes: 15,
   },
 ];
-const initialUsers = [
-  {
-    username: 'test',
-    name: 'Test Name',
-    password: 'test',
-  },
-  {
-    username: 'abhinav',
-    name: 'Abhinav Jaishi',
-    password: '0905',
-  },
-];
-const nonExistingId = async () => {
+const User = require('../models/user');
+
+const nonExistingId = async (userId) => {
   const blog = new Blog({
     title: 'Exploring the Power of Functional Programming in JavaScript',
     author: 'David Black',
     url: 'https://example.com/functional-javascript',
     likes: 28,
+    user: userId,
   });
   await blog.save();
   await blog.deleteOne();
@@ -62,8 +53,26 @@ const blogsInDb = async () => {
   return blogs.map((blog) => blog.toJSON());
 };
 
+const createBlogsWithUser = async (userId) => {
+  const blogsWithUser = initialBlogs.map((blog) => ({
+    ...blog,
+    user: userId,
+  }));
+  // console.log('user', user);
+  const savedBlogs = await Blog.insertMany(blogsWithUser);
+
+  await User.findByIdAndUpdate(userId, {
+    $push: {
+      blogs: {
+        $each: savedBlogs.map((blog) => blog.id),
+      },
+    },
+  });
+};
+
 module.exports = {
   initialBlogs,
   nonExistingId,
   blogsInDb,
+  createBlogsWithUser,
 };
