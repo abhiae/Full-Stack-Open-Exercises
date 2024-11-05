@@ -3,22 +3,17 @@ import Blog from './components/Blog';
 import Notification from './components/Notification';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import Togglable from './components/Togglable';
+import BlogForm from './components/BlogForm';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [newBlog, setNewBlog] = useState({
-    title: '',
-    author: '',
-    url: '',
-  });
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [notificationMessage, setNotificationMessage] = useState(null);
 
-  // log
-  // console.log('blogs', blogs);
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -54,17 +49,9 @@ const App = () => {
     }
   };
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setNewBlog((blog) => ({ ...blog, [name]: value }));
-  };
-
-  const handleCreateBlog = (event) => {
-    event.preventDefault();
-
-    blogService.addBlog(newBlog).then((returnedBlog) => {
+  const addBlog = (blogObject) => {
+    blogService.addBlog(blogObject).then((returnedBlog) => {
       setBlogs(blogs.concat(returnedBlog));
-      setNewBlog({ title: '', author: '', url: '' });
       setNotificationMessage(
         `a new blog ${returnedBlog.title} by ${returnedBlog.author}`
       );
@@ -130,70 +117,6 @@ const App = () => {
     );
   };
 
-  const createBlog = () => {
-    return (
-      <>
-        <h2>Create New</h2>
-        <form onSubmit={handleCreateBlog}>
-          <div>
-            Title
-            <input
-              type="text"
-              name="title"
-              value={newBlog.title}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            Author
-            <input
-              type="text"
-              name="author"
-              value={newBlog.author}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            Url
-            <input
-              type="text"
-              name="url"
-              value={newBlog.url}
-              onChange={handleInputChange}
-            />
-          </div>
-          <button type="submit">create</button>
-        </form>
-      </>
-    );
-  };
-
-  // const notification = (message, isError) => {
-  //   let style = null;
-  //   if (isError) {
-  //     style = {
-  //       color: 'red',
-  //       background: 'lightgrey',
-  //       fontSize: 20,
-  //       borderStyle: 'solid',
-  //       padding: 10,
-  //       marginBottom: 10,
-  //     };
-  //   } else {
-  //     style = {
-  //       color: 'green',
-  //       background: 'lightgrey',
-  //       fontSize: 20,
-  //       borderStyle: 'solid',
-  //       padding: 10,
-  //       marginBottom: 10,
-  //     };
-  //   }
-
-  //   if (errorMessage === null) return null;
-  //   return <p style={style}>{message}</p>;
-  // };
-
   return (
     <div>
       {user === null ? (
@@ -206,7 +129,9 @@ const App = () => {
           <p>
             {user.name} logged-in {logOutButton()}{' '}
           </p>
-          {createBlog()}
+          <Togglable buttonLabel="new blog">
+            <BlogForm createBlog={addBlog} />
+          </Togglable>
           {blogView()}
         </div>
       )}
