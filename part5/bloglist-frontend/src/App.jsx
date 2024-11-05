@@ -14,9 +14,19 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [notificationMessage, setNotificationMessage] = useState(null);
 
+  // log
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => {
+      setBlogs(blogs);
+      // sort blogs initially
+      blogs.sort((a, b) => b.likes - a.likes);
+    });
   }, []);
+
+  // csort blogs after change in blogs
+  useEffect(() => {
+    blogs.sort((a, b) => b.likes - a.likes);
+  }, [blogs]);
 
   useEffect(() => {
     const loggedInUserJSON = window.localStorage.getItem('loggedInUser');
@@ -61,6 +71,17 @@ const App = () => {
     });
   };
 
+  const increaseLike = (id, updatedBlogObject) => {
+    blogService.updateLike(id, updatedBlogObject).then((returnedBlog) => {
+      setBlogs(blogs.map((blog) => (blog.id === id ? returnedBlog : blog)));
+    });
+  };
+
+  const deleteBlog = (id) => {
+    blogService.deleteBlog(id).then(() => {
+      setBlogs(blogs.filter((blog) => blog.id !== id));
+    });
+  };
   const loginForm = () => {
     return (
       <form onSubmit={handleLogin}>
@@ -98,7 +119,13 @@ const App = () => {
     return (
       <div>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateLike={increaseLike}
+            removeBlog={deleteBlog}
+            currentUsername={user.username}
+          />
         ))}
       </div>
     );

@@ -25,4 +25,20 @@ const addBlog = (newBlogObject) => {
   return request.then((response) => response.data);
 };
 
-export default { getAll, setToken, addBlog };
+const updateLike = (id, updatedBlogObject) => {
+  const request = axios.put(`${baseUrl}/${id}`, updatedBlogObject);
+  return request.then((response) => response.data);
+};
+
+const deleteBlog = (id) => {
+  const config = {
+    headers: {
+      Authorization: token,
+    },
+  };
+  return axios
+    .delete(`${baseUrl}/${id}`, config)
+    .then(console.log('blog deleted succesfully'));
+};
+
+export default { getAll, setToken, addBlog, updateLike, deleteBlog };
